@@ -48,12 +48,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1577041592697892}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f5a2105315250204eb15703b248de0c6, type: 3}
+  m_Script: {fileID: 11500000, guid: 82bdde6e95599f44a86f741abf56b073, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   size:
-    x: 20
-    z: 20
-  cellPrefab: {fileID: 114690004896609930, guid: 3c19ed7ae84b8124ca6b7216f6a997ac,
+    x: 0
+    z: 0
+  cellPrefab: {fileID: 114690004896609930, guid: 0da9a80e12ed539478240dfe78371505,
     type: 2}
-  generationStepDisplay: 0.01
+  generationStepDisplay: 0
