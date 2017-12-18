@@ -15,10 +15,10 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
-	//public vector
 
+	//Prefab reference
 	public Maze mazePrefab;
-
+	//Holds instance of Prefab
 	private Maze mazeInstance;
 
 	private void BeginGame() {

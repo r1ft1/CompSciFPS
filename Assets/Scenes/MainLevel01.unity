@@ -366,7 +366,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 343201981}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f84aca8f9b60ee34c864dc805f2819f6, type: 3}
+  m_Script: {fileID: 11500000, guid: e2f019adeca8fa24b8cfba856dcc8636, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   mazePrefab: {fileID: 114764929139272000, guid: 8e7197b85f8d0f94c89c3b0e088c96b2,
@@ -830,7 +830,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1233707504}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f0c8d873550286943a29bae43bd09e0f, type: 3}
+  m_Script: {fileID: 11500000, guid: 65e17e5a044b35e4895330a248e3acc4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   target: {x: 0, y: 0, z: 0}

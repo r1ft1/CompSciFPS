@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//Generates contents of Maze
 public class Maze : MonoBehaviour {
 	
 	public IntVector2 size;
@@ -60,7 +61,7 @@ public class Maze : MonoBehaviour {
 		MazeCell newCell = Instantiate(cellPrefab) as MazeCell; 
 		cells[_coordinates.x, _coordinates.z] = newCell;
 		newCell.coordinates = _coordinates;
-		newCell.name = "MazeCell" + _coordinates.x + ", " + _coordinates.z;
+		newCell.name = "MazeCell " + _coordinates.x + ", " + _coordinates.z;
 		newCell.transform.parent = transform;
 		newCell.transform.localPosition = new Vector3(_coordinates.x - size.x * 0.5f + 0.5f, -4.5f, _coordinates.z - size.z * 0.5f + 0.5f);
 		return newCell;
