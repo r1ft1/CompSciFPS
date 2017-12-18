@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour {
 	private float lookSensitivity = 3f;
 
 	private PlayerMotor motor;
+	
 
 	void Start ()
 	{
