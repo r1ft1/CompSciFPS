@@ -13,6 +13,9 @@ public class Maze : MonoBehaviour {
 
 	public float generationStepDisplay; //Intervals between each cell generated to visual Cells Generation
 
+	public MazePassage passagePrefab;
+	public MazeWall wallPrefab;
+
 	public MazeCell GetCell (IntVector2 coordinates) { //Retrieves maze's cell coordinates
 		return cells[coordinates.x, coordinates.z];
 	}
@@ -45,15 +48,43 @@ public class Maze : MonoBehaviour {
 		MazeCell currentCell = activeCells[currentIndex];
 		MazeDirection direction = MazeDirections.RandomDirection;
 		IntVector2 coordinates = currentCell.coordinates + direction.ToIntVector2();
-		//If next cell empty
-		if (containsCoordinates(coordinates) && GetCell (coordinates) == null) {
-			activeCells.Add(CreateCell(coordinates));
-		}
-		//If occupied remove from list
-		else {
-			activeCells.RemoveAt (currentIndex);
+
+		if (containsCoordinates(coordinates)) 
+		{
+			MazeCell neighbour = GetCell (coordinates);
+
+			if (neighbour == null) {
+				neighbour = CreateCell (coordinates);
+				CreatePassage (currentCell, neighbour, direction);
+				activeCells.Add (neighbour);
+			} else {
+				CreateWall (currentCell, neighbour, direction);
+				activeCells.RemoveAt (currentIndex);
+			}
 		}
 
+		//If occupied remove from list
+		else 
+		{
+			CreateWall (currentCell, null, direction);
+			activeCells.RemoveAt (currentIndex);
+		}
+	}
+
+	private void CreatePassage (MazeCell cell, MazeCell otherCell, MazeDirection direction) {
+		MazePassage passage = Instantiate (passagePrefab) as MazePassage;
+		passage.Initialize (cell, otherCell, direction);
+		passage = Instantiate (passagePrefab) as MazePassage;
+		passage.Initialize (otherCell, cell, direction.GetOpposite);
+	}
+
+	private void CreateWall (MazeCell cell, MazeCell otherCell, MazeDirection direction) {
+		MazeWall wall = Instantiate (wallPrefab) as MazeWall;
+		wall.Initialize (cell, otherCell, direction);
+		if (otherCell != null) {
+			wall = Instantiate (wallPrefab) as MazeWall;
+			wall.Initialize (otherCell, cell, direction);
+		}
 	}
 
 	private MazeCell CreateCell (IntVector2 _coordinates) {
