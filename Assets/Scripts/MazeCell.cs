@@ -5,6 +5,14 @@ using UnityEngine;
 public class MazeCell : MonoBehaviour {
 	public IntVector2 coordinates;
 
+	private int initializedEdgeCount;
+
+	public bool IsFullyInitialized {
+		get {
+			return initializedEdgeCount == MazeDirections.Count;
+		}
+	}
+
 	//Cells will store edges in an array, 4 edges
 	private MazeCellEdge[] edges = new MazeCellEdge[MazeDirections.Count];
 
