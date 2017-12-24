@@ -75,7 +75,7 @@ public class Maze : MonoBehaviour {
 		MazePassage passage = Instantiate (passagePrefab) as MazePassage;
 		passage.Initialize (cell, otherCell, direction);
 		passage = Instantiate (passagePrefab) as MazePassage;
-		passage.Initialize (otherCell, cell, direction.GetOpposite);
+		passage.Initialize (otherCell, cell, direction.GetOpposite());
 	}
 
 	private void CreateWall (MazeCell cell, MazeCell otherCell, MazeDirection direction) {
@@ -83,7 +83,7 @@ public class Maze : MonoBehaviour {
 		wall.Initialize (cell, otherCell, direction);
 		if (otherCell != null) {
 			wall = Instantiate (wallPrefab) as MazeWall;
-			wall.Initialize (otherCell, cell, direction);
+			wall.Initialize (otherCell, cell, direction.GetOpposite());
 		}
 	}
 
