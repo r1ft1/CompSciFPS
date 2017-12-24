@@ -54,10 +54,10 @@ MonoBehaviour:
   size:
     x: 20
     z: 20
-  cellPrefab: {fileID: 114690004896609930, guid: 0da9a80e12ed539478240dfe78371505,
+  cellPrefab: {fileID: 114690004896609930, guid: e2b54024f6eaa834abce79580b780f3a,
     type: 2}
   generationStepDisplay: 0
-  passagePrefab: {fileID: 114016790684377958, guid: 40ea6c0f60f7f7644800e5d0fbf77a67,
+  passagePrefab: {fileID: 114016790684377958, guid: b0dc5dcf548128040993da98ccfc2195,
     type: 2}
-  wallPrefab: {fileID: 114122935604749844, guid: ac2ef0f02f5c54548afb9660f3f0cc01,
+  wallPrefab: {fileID: 114218307059033896, guid: 2dd5875cd5c775c40b27b2bd0508425f,
     type: 2}
