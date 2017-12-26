@@ -4,50 +4,63 @@ using UnityEngine;
 
 //Generates contents of Maze
 public class Maze : MonoBehaviour {
-	
+
+	//Ractangular grid to fill with maze
 	public IntVector2 size;
 
+	//Stores MazeCell prefab to instantiate
 	public MazeCell cellPrefab;
 
-	private MazeCell[,] cells; //Delcares multidimensional array of MazeCells with the name cells
+	//Delcares 2D array of MazeCells with the name cells
+	private MazeCell[,] cells; 
 
-	public float generationStepDisplay; //Intervals between each cell generated to visual Cells Generation
+	//Intervals between each cell generated to visual Cells Generation
+	public float generationStepDisplay; 
 
 	public MazePassage passagePrefab;
 	public MazeWall wallPrefab;
 
-	public MazeCell GetCell (IntVector2 coordinates) { //Retrieves maze's cell coordinates
+	//Retrieves maze's cell coordinates
+	public MazeCell GetCell (IntVector2 coordinates) { 
 		return cells[coordinates.x, coordinates.z];
 	}
 
+	//Constructs the Maze contents
 	public IEnumerator Generate () 
 	{
 		WaitForSeconds delay = new WaitForSeconds (generationStepDisplay);
-		cells = new MazeCell [size.x, size.z];  //Creates array of MazeCells using values from Inspector
+		//Creates array of MazeCells using values from Inspector
+		cells = new MazeCell [size.x, size.z];  
 		List<MazeCell> activeCells = new List<MazeCell>();
 		DoFirstGenerationStep (activeCells);
 		while (activeCells.Count > 0) {
 			yield return delay;
 			DoNextGenerationStep(activeCells);
 		}
-		/*IntVector2 coordinates = randomCoordinates; //Calls Property randomCoordinates
-		while (containsCoordinates(coordinates) && GetCell (coordinates) == null) {
-			yield return delay;
-			CreateCell(coordinates);
-			coordinates += MazeDirections.RandomDirection.ToIntVector2(); 
-		}*/ 
 	}
 
 	private void DoFirstGenerationStep (List<MazeCell> activeCells) {
 		activeCells.Add(CreateCell (randomCoordinates));
 	}
 
+	private MazeCell CreateCell (IntVector2 _coordinates) {
+		//Instantiate creates a clone of the cellPrefab Object which is casted to type MazeCell using 'as'
+		MazeCell newCell = Instantiate(cellPrefab) as MazeCell; 
+		cells[_coordinates.x, _coordinates.z] = newCell;
+		newCell.coordinates = _coordinates;
+		newCell.name = "MazeCell " + _coordinates.x + ", " + _coordinates.z;
+		newCell.transform.parent = transform;
+		newCell.transform.localPosition = new Vector3(_coordinates.x - size.x * 0.5f + 0.5f, 0f, _coordinates.z - size.z * 0.5f + 0.5f);
+		return newCell;
+	}
+
 	//Retrieves current cell, check if next move possible without collision, take care of removing cells from list
 	private void DoNextGenerationStep (List<MazeCell> activeCells) {
 		int currentIndex = activeCells.Count -1;
 		MazeCell currentCell = activeCells[currentIndex];
+		//To completely fill maze:
 		//Only remove cell from active list when all edges initialized
-		if (currentCell.IsFullyInstantiated) {
+		if (currentCell.IsFullyInitialized) {
 			activeCells.RemoveAt (currentIndex);
 			return;
 		}
@@ -65,7 +78,7 @@ public class Maze : MonoBehaviour {
 				activeCells.Add (neighbour);
 			} else {
 				CreateWall (currentCell, neighbour, direction);
-				//Not removing Cell here 
+				//No longer removing Cell here 
 					//activeCells.RemoveAt (currentIndex);
 			}
 		}
@@ -74,7 +87,8 @@ public class Maze : MonoBehaviour {
 		else 
 		{
 			CreateWall (currentCell, null, direction);
-			activeCells.RemoveAt (currentIndex);
+			//No longer removing cell here
+				//activeCells.RemoveAt (currentIndex);
 		}
 	}
 
@@ -94,16 +108,7 @@ public class Maze : MonoBehaviour {
 		}
 	}
 
-	private MazeCell CreateCell (IntVector2 _coordinates) {
-		//Instantiate creates a clone of the cellPrefab Object which is casted to type Maze using 'as'
-		MazeCell newCell = Instantiate(cellPrefab) as MazeCell; 
-		cells[_coordinates.x, _coordinates.z] = newCell;
-		newCell.coordinates = _coordinates;
-		newCell.name = "MazeCell " + _coordinates.x + ", " + _coordinates.z;
-		newCell.transform.parent = transform;
-		newCell.transform.localPosition = new Vector3(_coordinates.x - size.x * 0.5f + 0.5f, 0f, _coordinates.z - size.z * 0.5f + 0.5f);
-		return newCell;
-	}
+
 
 	//Property - Item of Data held in an object
 	public IntVector2 randomCoordinates //Read only Property which returns a random IntVector2 set of coordinates
