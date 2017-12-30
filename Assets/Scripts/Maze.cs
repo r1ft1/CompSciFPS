@@ -25,6 +25,17 @@ public class Maze : MonoBehaviour {
 		return cells[coordinates.x, coordinates.z];
 	}
 
+	private MazeCell CreateCell (IntVector2 _coordinates) {
+		//Instantiate creates a clone of the cellPrefab Object which is casted to type MazeCell using 'as'
+		MazeCell newCell = Instantiate(cellPrefab) as MazeCell; 
+		cells[_coordinates.x, _coordinates.z] = newCell;
+		newCell.coordinates = _coordinates;
+		newCell.name = "MazeCell " + _coordinates.x + ", " + _coordinates.z;
+		newCell.transform.parent = transform;
+		newCell.transform.localPosition = new Vector3(_coordinates.x - size.x * 0.5f + 0.5f, 0f, _coordinates.z - size.z * 0.5f + 0.5f);
+		return newCell;
+	}
+
 	//Constructs the Maze contents
 	public IEnumerator Generate () 
 	{
@@ -39,21 +50,20 @@ public class Maze : MonoBehaviour {
 		}
 	}
 
+	/*
+	private void CreatePassageInSameRoom (MazeCell cells, MazeCell otherCell, MazeDirection direction)
+	{
+		MazePassage passage = Instantiate (passagePrefab) as MazePassage;
+		passage.Initialize (cell, otherCell, direction);
+		passage = Instantiate (passagePrefab) as MazePassage;
+		passage.Initialize (otherCell, cell, direction.GetOpposite ());
+	}
+	*/
+
 	private void DoFirstGenerationStep (List<MazeCell> activeCells) {
 		activeCells.Add(CreateCell (randomCoordinates));
 	}
-
-	private MazeCell CreateCell (IntVector2 _coordinates) {
-		//Instantiate creates a clone of the cellPrefab Object which is casted to type MazeCell using 'as'
-		MazeCell newCell = Instantiate(cellPrefab) as MazeCell; 
-		cells[_coordinates.x, _coordinates.z] = newCell;
-		newCell.coordinates = _coordinates;
-		newCell.name = "MazeCell " + _coordinates.x + ", " + _coordinates.z;
-		newCell.transform.parent = transform;
-		newCell.transform.localPosition = new Vector3(_coordinates.x - size.x * 0.5f + 0.5f, 0f, _coordinates.z - size.z * 0.5f + 0.5f);
-		return newCell;
-	}
-
+		
 	//Retrieves current cell, check if next move possible without collision, take care of removing cells from list
 	private void DoNextGenerationStep (List<MazeCell> activeCells) {
 		int currentIndex = activeCells.Count -1;
@@ -76,10 +86,12 @@ public class Maze : MonoBehaviour {
 				neighbour = CreateCell (coordinates);
 				CreatePassage (currentCell, neighbour, direction);
 				activeCells.Add (neighbour);
-			} else {
+			} 
+			//else if (currentCell.room == neighbour.room) {
+			//	CreatePassageInSameRoom (currentCell, neighbour, direction);
+			//}
+			else {
 				CreateWall (currentCell, neighbour, direction);
-				//No longer removing Cell here 
-					//activeCells.RemoveAt (currentIndex);
 			}
 		}
 
@@ -108,10 +120,9 @@ public class Maze : MonoBehaviour {
 		}
 	}
 
-
-
-	//Property - Item of Data held in an object
-	public IntVector2 randomCoordinates //Read only Property which returns a random IntVector2 set of coordinates
+	//Property - Item of Data held in an object. Method that looks like variable
+	//Read only Property which returns a random IntVector2 set of coordinates
+	public IntVector2 randomCoordinates 
 	{
 		get {
 			return new IntVector2(Random.Range(0, size.x), Random.Range(0, size.z));

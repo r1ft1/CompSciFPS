@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour {
 	private Maze mazeInstance;
 
 	private void BeginGame() {
+		//Casted to 'Maze' in order to save in Maze mazeInstance
 		mazeInstance = Instantiate(mazePrefab) as Maze;
 		StartCoroutine(mazeInstance.Generate());
 	}
