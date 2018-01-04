@@ -11,15 +11,18 @@ public class HighScoreManager : MonoBehaviour {
 
 	private List<HighScore> highScores = new List<HighScore> ();
 
-	// Use this for initialization
+	//Variable to hold to prefab of the Score Template, for instantiation
+	public GameObject scorePrefab;
+
+	public Transform scoreParent;
+
+	public int topRanks;
+
 	void Start () {
 		connectionString = "URI=file:" + Application.dataPath + "/HighScoreDB.sqlite";
-		//InsertScore ("James", 10000);
-		GetScores ();
-		DeleteScore (3);
+		ShowScores ();
 	}
-	
-	// Update is called once per frame
+
 	void Update () {
 		
 	}
@@ -67,6 +70,7 @@ public class HighScoreManager : MonoBehaviour {
 				}
 			}
 		}
+		highScores.Sort ();
 	}
 
 	private void DeleteScore(int id)
@@ -83,6 +87,23 @@ public class HighScoreManager : MonoBehaviour {
 				dbCmd.CommandText = sqlQuery;
 				dbCmd.ExecuteScalar ();
 				dbConnection.Close ();
+			}
+		}
+	}
+
+	private void ShowScores()
+	{
+		GetScores ();
+		for (int i = 0; i < topRanks; i++) {
+			if (i <= highScores.Count-1) {
+				GameObject tmpObject = Instantiate (scorePrefab);
+
+				HighScore tmpScore = highScores [i];
+
+				tmpObject.GetComponent<HighScoreScript> ().SetScore (tmpScore.Name, tmpScore.Score.ToString(), "#" + (i + 1).ToString ());
+				tmpObject.transform.SetParent (scoreParent);
+
+				tmpObject.GetComponent<RectTransform> ().localScale = new Vector3 (1, 1, 1);
 			}
 		}
 	}
