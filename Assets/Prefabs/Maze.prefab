@@ -52,8 +52,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   size:
-    x: 20
-    z: 20
+    x: 10
+    z: 10
   cellPrefab: {fileID: 114690004896609930, guid: e2b54024f6eaa834abce79580b780f3a,
     type: 2}
   generationStepDisplay: 0

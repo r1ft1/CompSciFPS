@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using System.Data;
 using Mono.Data.Sqlite;
+using UnityEngine.UI;
 
 public class HighScoreManager : MonoBehaviour {
 
@@ -18,31 +19,64 @@ public class HighScoreManager : MonoBehaviour {
 
 	public int topRanks;
 
+	public int saveScores;
+
+	public InputField enterName;
+
+	public GameObject nameDialog;
+
 	void Start () {
 		connectionString = "URI=file:" + Application.dataPath + "/HighScoreDB.sqlite";
+		InsertScore ("Philip", 8000);
+		DeleteExtraScores ();
 		ShowScores ();
 	}
 
 	void Update () {
-		
+		if (Input.GetKeyDown(KeyCode.Escape)) {
+			nameDialog.SetActive (!nameDialog.activeSelf);
+		}
+	}
+
+	public void EnterName()
+	{
+		if (enterName.text != string.Empty) {
+			int score = UnityEngine.Random.Range (1, 1000);
+			InsertScore (enterName.text, score);
+			enterName.text = string.Empty;
+
+			ShowScores ();
+		}
 	}
 
 	private void InsertScore(string name, int newScore) 
 	{
-		using (IDbConnection dbConnection = new SqliteConnection (connectionString)) 
-		{
-			dbConnection.Open ();
+		GetScores ();
+		int hsCount = highScores.Count;
 
-			using (IDbCommand dbCmd = dbConnection.CreateCommand ()) 
-			{
-				string sqlQuery = string.Format ("INSERT INTO HighScores(Name,Score) VALUES(\"{0}\",\"{1}\")", name, newScore);
-
-				dbCmd.CommandText = sqlQuery;
-				dbCmd.ExecuteScalar ();
-				dbConnection.Close ();
+		if (highScores.Count > 0) {
+			HighScore lowestScore = highScores [highScores.Count - 1];
+			if (lowestScore != null && saveScores > 0 && highScores.Count >= saveScores && newScore > lowestScore.Score) {
+				DeleteScore (lowestScore.ID);
+				hsCount--;
 			}
 		}
 
+		if (hsCount < saveScores) {
+			using (IDbConnection dbConnection = new SqliteConnection (connectionString)) 
+			{
+				dbConnection.Open ();
+
+				using (IDbCommand dbCmd = dbConnection.CreateCommand ()) 
+				{
+					string sqlQuery = string.Format ("INSERT INTO HighScores(Name,Score) VALUES(\"{0}\",\"{1}\")", name, newScore);
+
+					dbCmd.CommandText = sqlQuery;
+					dbCmd.ExecuteScalar ();
+					dbConnection.Close ();
+				}
+			}
+		}
 	}
 
 	private void GetScores()
@@ -94,6 +128,11 @@ public class HighScoreManager : MonoBehaviour {
 	private void ShowScores()
 	{
 		GetScores ();
+
+		foreach (GameObject score in GameObject.FindGameObjectsWithTag("Score")) {
+			Destroy (score);
+		}
+
 		for (int i = 0; i < topRanks; i++) {
 			if (i <= highScores.Count-1) {
 				GameObject tmpObject = Instantiate (scorePrefab);
@@ -107,5 +146,30 @@ public class HighScoreManager : MonoBehaviour {
 			}
 		}
 	}
+
+	private void DeleteExtraScores()
+	{
+		GetScores ();
+		if (saveScores <= highScores.Count) {
+			int deleteCount = highScores.Count - saveScores;
+			highScores.Reverse ();
+			using (IDbConnection dbConnection = new SqliteConnection (connectionString)) 
+			{
+				dbConnection.Open ();
+
+				using (IDbCommand dbCmd = dbConnection.CreateCommand ()) 
+				{
+					for (int i = 0; i < deleteCount; i++) {
+						string sqlQuery = string.Format ("DELETE FROM HighScores WHERE PlayerID = \"{0}\"", highScores[i].ID);
+
+						dbCmd.CommandText = sqlQuery;
+						dbCmd.ExecuteScalar ();
+					}
+					dbConnection.Close ();
+				}
+			}
+		}
+	}
+
 
 }
